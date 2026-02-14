@@ -58,20 +58,20 @@ if len(good_matches) > MIN_MATCH_COUNT:
     src_pts = np.float32([kp1[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
     dst_pts = np.float32([kp2[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
 
-    # Hitung Matriks Homografi (M)
+    # Hitung Matriks
     M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
     matchesMask = mask.ravel().tolist()
 
-    # Ambil dimensi gambar referensi (lebar & tinggi)
+    # Ambil dimensi gambar1
     h, w = gray_ref.shape
 
-    # membentuk kotak (persegi panjang) seukuran gambar referensi
+    # membentuk kotak (persegi panjang) seukuran gambar1
     pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
 
-    # Transformasikan kotak tadi ke gambar scene menggunakan matriks M
+    # Transformasikan kotak tadi ke gambar2
     dst = cv2.perspectiveTransform(pts, M)
 
-    # Gambar kotak hasil deteksi di gambar scene (Warna Hijau Tebal)
+    # Gambar kotak hasil deteksi di gambar2
     img_scene = cv2.polylines(img_scene, [np.int32(dst)], True, (0, 255, 0), 5, cv2.LINE_AA)
     
     print("Objek ditemukan!")
